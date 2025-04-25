@@ -9,8 +9,8 @@ import {
   TabPanel,
   TabPanels,
 } from '@chakra-ui/react';
-import Login from '../components/authendication/Login';
-import Signup from '../components/authendication/Signup';
+import Login from '../components/authentication/Login';
+import Signup from '../components/authentication/Signup';
 
 const homePage = () => {
   return (

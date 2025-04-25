@@ -1,13 +1,58 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack, useToast} from '@chakra-ui/react'
 import React, {useState} from 'react'
+import axios from 'axios';
 
 const Login = () => {
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(true); // For show & hide the password
     const [email, setEmail]= useState();
     const [password, setPassword]= useState();
+    const toast= useToast();
 
     const handleClick = () => setShow(!show);
-    const submitHandler = () => {}
+    const submitHandler = async() => {
+        if(!(email || password)){
+            toast({
+                title: "Pleasr Fill all the Fields",
+                status: 'warning',
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom'
+            })
+            return;
+        }
+        try{
+            const config= {
+                headers: {
+                    "Content-type": "application/json"
+                }
+            };
+            const {data}= await axios.post(
+                "/api/user/login",
+                {
+                    email,
+                    password
+                },
+                config
+            );
+            toast({
+                title: "Login succcessfull",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom'
+            })
+            localStorage.setItem("userInfo", JSON.stringify(data));
+        } catch(console){
+            toast({
+                title: "Error Occurred!",
+                description: error.response?.data?.message || error.message || "Something went wrong!",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+              });
+        }
+    }
     
     return <VStack spacing='5px' color='black'>
         <FormControl id="email" isRequired>
