@@ -74,4 +74,22 @@ const loginUser= asyncHandler(async(req, res)=>{
     )
 })
 
-export {registerUser, loginUser};
+const allUsers= asyncHandler(async(req, res)=>{
+    const keyWord= req.params.serach?
+    {
+        $or: [
+            {name: {$regex: req.params.serach, $options: "i"}},
+            {email: {$regex: req.params.serach, $options: "i"}}
+        ]
+    }: {}
+
+    const user= await User.find(keyWord).find({
+        _id: {$ne: req.user._id}
+    }).select("-password").sort("-createdAt")
+
+    return res.status(200).json(
+        new ApiResponse(200, user, "All users fetched successfully")
+    );
+})
+
+export {registerUser, loginUser, allUsers};

@@ -25,5 +25,6 @@ app.use(cookieParser())
 import userRouter from "./routes/user.routes.js"
 
 app.use("/api/user", userRouter)
+app.use("/api/chat", chatRouter)
 
 export {app}
