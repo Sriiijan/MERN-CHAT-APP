@@ -23,6 +23,7 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import userRouter from "./routes/user.routes.js"
+import chatRouter from "./routes/chat.routes.js"
 
 app.use("/api/user", userRouter)
 app.use("/api/chat", chatRouter)
