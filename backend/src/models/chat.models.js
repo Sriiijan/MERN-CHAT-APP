@@ -11,7 +11,7 @@ const chatSchema = new Schema({
     },
     users: [
         {
-            type: mongoose.type.ObjectId,
+            type: mongoose.Types.ObjectId,
             ref: "User"
         }
     ],

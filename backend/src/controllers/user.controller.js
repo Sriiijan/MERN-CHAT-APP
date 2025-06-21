@@ -3,7 +3,9 @@ import { User } from "../models/user.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { generateToken } from "../utils/generateToken.js";
 
+// Register New User
 const registerUser= asyncHandler(async (req, res)=> {
     const {name, email, password}= req.body
 
@@ -46,6 +48,7 @@ const registerUser= asyncHandler(async (req, res)=> {
     )
 })
 
+// Login User
 const loginUser= asyncHandler(async(req, res)=>{
     const {email, password}= req.body
     
@@ -70,16 +73,17 @@ const loginUser= asyncHandler(async(req, res)=>{
     const loggedInUser= await User.findById(user._id).select("-password")
 
     return res.status(200).json(
-        new ApiResponse(200, {user: loggedInUser}, "User logged in successfully")
+        new ApiResponse(200, {user: loggedInUser, token: generateToken(user._id)}, "User logged in successfully")
     )
 })
 
+// Serach User
 const allUsers= asyncHandler(async(req, res)=>{
-    const keyWord= req.params.serach?
+    const keyWord= req.query.search?
     {
         $or: [
-            {name: {$regex: req.params.serach, $options: "i"}},
-            {email: {$regex: req.params.serach, $options: "i"}}
+            {name: {$regex: req.query.search, $options: "i"}},
+            {email: {$regex: req.query.search, $options: "i"}}
         ]
     }: {}
 

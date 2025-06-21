@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Chat } from "../models/chat.models.js";
 
+// Access Chat
 const accessChat= asyncHandler(async (req, res)=>{
     const {userId}= req.body;
 
@@ -11,11 +12,11 @@ const accessChat= asyncHandler(async (req, res)=>{
         throw new ApiError(400, "User ID is required to access chat");
     }
 
-    var isChat= await CharacterData.find({
+    var isChat= await Chat.find({
         isGroupChat: false,
         $and: [
-            {user: {$elementMatch:{$eq: req.user._id}}},
-            {user: {$elementMatch:{$eq: userId}}}
+            {user: {$elemMatch:{$eq: req.user._id}}},
+            {user: {$elemMatch:{$eq: userId}}}
         ]
     }).populate("user", "-password").populate("latestMessage")
 
@@ -53,9 +54,10 @@ const accessChat= asyncHandler(async (req, res)=>{
     }
 })
 
+// Fetch Chat
 const fetchChats= asyncHandler(async (req, res)=>{
     try {
-        Chat.findOne({ users: {$elementMatch: {$eq: req.user._id}} })
+        Chat.findOne({ users: {$elemMatch: {$eq: req.user._id}} })
         .populate("users", "-password")
         .populate("groupAdmin", "-password")
         .populate("latestMessage")
@@ -76,6 +78,7 @@ const fetchChats= asyncHandler(async (req, res)=>{
     }
 })
 
+// Create Group Chat
 const createGroupChat= asyncHandler(async (req, res)=>{
     const groupName= req.body.name;
     const groupUsers= req.body.users;
@@ -104,7 +107,7 @@ const createGroupChat= asyncHandler(async (req, res)=>{
         .populate("users", "-password")
         .populate("groupAdmin", "-password");
     
-        return res.ststus(200).json(
+        return res.status(200).json(
             new ApiResponse(200, fullGroupChat, "Group chat created successfully")
         )
     } catch (error) {
@@ -112,6 +115,7 @@ const createGroupChat= asyncHandler(async (req, res)=>{
     }
 })
 
+// Rename Group Name
 const renameGroup= asyncHandler(async (req, res)=>{
     const {chatId, chatName}= req.body;
 
@@ -127,7 +131,7 @@ const renameGroup= asyncHandler(async (req, res)=>{
         {
             new: true
         }
-    ).populate("usres", "-password")
+    ).populate("users", "-password")
     .populate("groupAdmin", "-password");
 
     if (!updatedChat) {
@@ -139,17 +143,18 @@ const renameGroup= asyncHandler(async (req, res)=>{
     )
 })
 
+// Add Users To  Group
 const addToGroup= asyncHandler(async (req, res)=>{
-    const {chatId, UsersId}= req.body;
+    const {chatId, usersId}= req.body;
 
-    if(!chatId || !UsersId){
+    if(!chatId || !usersId){
         throw new ApiError(400, "Chat ID and User ID are required");
     }
 
     const added= await Chat.findByIdAndUpdate(
         chatId,
         {
-            $push: {users: UsersId}
+            $push: {users: usersId}
         },
         {
             new: true
@@ -166,17 +171,18 @@ const addToGroup= asyncHandler(async (req, res)=>{
     )
 })
 
+// Remove From Group
 const removeFromGroup= asyncHandler(async (req, res)=>{
-    const {chatId, UsersId}= req.body;
+    const {chatId, usersId}= req.body;
 
-    if(!chatId || !UsersId){
+    if(!chatId || !usersId){
         throw new ApiError(400, "Chat ID and User ID are required");
     }
 
     const removed= await Chat.findByIdAndUpdate(
         chatId,
         {
-            $pull: {users: UsersId}
+            $pull: {users: usersId}
         },
         {
             new: true
@@ -189,7 +195,7 @@ const removeFromGroup= asyncHandler(async (req, res)=>{
     }
 
     return res.status(200).json(
-        new ApiResponse(200, removed, "User added to group successfully")
+        new ApiResponse(200, removed, "User removed from group successfully")
     )
 })
 
