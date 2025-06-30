@@ -1,12 +1,17 @@
 import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack, useToast} from '@chakra-ui/react'
 import React, {useState} from 'react'
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import { ChatState } from '../../context/chatProvider.js';
 
 const Login = () => {
     const [show, setShow] = useState(true); // For show & hide the password
     const [email, setEmail]= useState();
     const [password, setPassword]= useState();
     const toast= useToast();
+
+    const history= useHistory();
+    const { setUser }= ChatState();
 
     const handleClick = () => setShow(!show);
     const submitHandler = async() => {
@@ -26,23 +31,34 @@ const Login = () => {
                     "Content-type": "application/json"
                 }
             };
-            const {data}= await axios.post(
+            const { data } = await axios.post(
                 "/api/user/login",
-                {
-                    email,
-                    password
-                },
+                { email, password },
                 config
-            );
-            toast({
-                title: "Login succcessfull",
+                );
+                console.log("Login Response:", data);
+
+
+                toast({
+                title: "Login successful",
                 status: "success",
                 duration: 5000,
                 isClosable: true,
-                position: 'bottom'
-            })
-            localStorage.setItem("userInfo", JSON.stringify(data));
-        } catch(console){
+                position: "bottom",
+                });
+
+                // ✅ Store token + user info
+                const userInfo = {
+                    ...data.data.user,
+                    token: data.data.token
+                };
+                setUser(userInfo);
+                localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
+
+                history.push("/chats");
+
+        } catch (error) {
             toast({
                 title: "Error Occurred!",
                 description: error.response?.data?.message || error.message || "Something went wrong!",
@@ -50,8 +66,9 @@ const Login = () => {
                 duration: 5000,
                 isClosable: true,
                 position: "bottom",
-              });
-        }
+            });
+}
+
     }
     
     return <VStack spacing='5px' color='black'>
