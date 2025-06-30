@@ -16,6 +16,7 @@ import {
   Input,
   useDisclosure,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import React, { useState } from 'react';
@@ -24,7 +25,7 @@ import ProfileModal from './ProfileModal.js';
 import { useHistory } from 'react-router-dom';
 import ChatLoading from '../ChatLoading.js';
 import UserListItem from '../authentication/UserAvatar/UserListItem.js';
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 import { set } from 'mongoose';
 
 const SideDrawer = () => {
@@ -86,13 +87,16 @@ const SideDrawer = () => {
 
   const accessChat = async (userId) => {
     try {
-      setLoadingChat(false);
-      const {data}= Axios.post("/api/chat", {userId}, {
+      setLoadingChat(true);
+      const {data}= await axios.post("/api/chat", {userId}, {
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         }
       })
+
+      if(!chats.find((c)=> c._id === data._id)) setChats([data, ...chats]);
+
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
@@ -184,6 +188,7 @@ const SideDrawer = () => {
                 />
               ))
             )}
+            {loadingChat && <Spinner ml="auto" display="flex"/>}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
