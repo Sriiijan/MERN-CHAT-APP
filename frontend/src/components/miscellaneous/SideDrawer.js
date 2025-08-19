@@ -26,7 +26,6 @@ import { useHistory } from 'react-router-dom';
 import ChatLoading from '../ChatLoading.js';
 import UserListItem from '../authentication/UserAvatar/UserListItem.js';
 import axios from 'axios';
-import { set } from 'mongoose';
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -46,7 +45,7 @@ const SideDrawer = () => {
   };
 
   const handleSearch = async () => {
-    console.log("User Token:", user?.token);
+    // console.log("User Token:", user?.token);
 
     if (!search) {
       toast({

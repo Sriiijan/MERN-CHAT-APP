@@ -5,10 +5,11 @@ import axios from 'axios';
 import { useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import ChatLoading from '../ChatLoading.js';
-import getSender from '../../config/ChatLogics.js';
+import {getSender} from '../../config/ChatLogics.js';
+import GroupChatModal from './GroupChatModal.js';
 
 
-const MyChats = () => {
+const MyChats = ({fetchAgain}) => {
   const [loggedUser, setLoggedUser] = useState();
   const {user, selectedChat, setSelectedChat, chats, setChats} = ChatState()
 
@@ -22,7 +23,8 @@ const MyChats = () => {
         }
       })
       console.log("Fetched chats:", data); 
-      setChats([data.data]);
+      setChats(Array.isArray(data.data) ? data.data : [data.data]);
+
     } catch (error) {
       toast({
         title: "Error Occurred!",
@@ -38,7 +40,7 @@ const MyChats = () => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-  }, [])
+  }, [fetchAgain])
 
   return (
     <Box
@@ -62,13 +64,16 @@ const MyChats = () => {
       alignItems="center"
       >
         My Chats
-        <Button
-        display="flex"
-        fontSize={{base: "17px", md: "20px"}}
-        rightIcon={<AddIcon />}
-        >
-          New Group Chat
-        </Button>
+        <GroupChatModal>
+          <Button
+            display="flex"
+            fontSize={{base: "17px", md: "20px"}}
+            rightIcon={<AddIcon />}
+          >
+            New Group Chat
+          </Button>
+        </GroupChatModal>
+        
       </Box>
 
       <Box

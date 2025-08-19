@@ -1,6 +1,7 @@
 import { Avatar, Box, Text } from '@chakra-ui/react';
 import { ChatState } from '../../../context/chatProvider.js';
 const UserListItem = ({user, handleFunction }) => {
+  // if (!user) return null; // Prevent rendering if user is undefined
   return (
     <Box
       onClick={handleFunction}
@@ -24,7 +25,7 @@ const UserListItem = ({user, handleFunction }) => {
         size="sm"
         cursor="pointer"
         name={user.name}
-        src={user.pic}
+        src={user.avatar}
       />
       <Box>
         <Text>{user.name}</Text>
