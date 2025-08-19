@@ -22,7 +22,7 @@ import UserListItem from "../authentication/UserAvatar/UserListItem";
 import { ChatState } from "../../context/chatProvider";
 import axios from "axios";
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, selectedChat, setSelectedChat } = ChatState();
 
@@ -184,6 +184,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       );
 
       userToRemove === user._id ? selectedChat() : setSelectedChat(data.data)
+      fetchMessages();
     } catch (error) {
       toast({
           title: "Error Occurred!",
