@@ -16,7 +16,7 @@ const ENDPOINT= "http://localhost:5000"
 var socket, selectedChatCompare;
 
 const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
-    const {user, selectedChat, setSelectedChat} = ChatState();
+    const {user, selectedChat, setSelectedChat, notification, setNotification} = ChatState();
 
     const toast = useToast();
     const typingTimeoutRef = useRef(null);
@@ -44,6 +44,7 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
       console.log("🔥 MESSAGES STATE CHANGED IN COMPONENT:", messages.length);
       setRenderTrigger(prev => prev + 1);
     }, [messages]);
+
 
     const fetchMessages = async () => {
       console.log("🚀 fetchMessages STARTED - current messages:", messages.length);
@@ -145,11 +146,17 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
       selectedChatCompare = selectedChat;
     }, [selectedChat?._id]);
 
+    
+    // console.log("NOTIFICATION: ", notification)
+
     // Handle incoming messages
     useEffect(() => {
       const handleNewMessage = (newMessageReceived) => {
         if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-          // give Notifications
+          if(!notification.includes(newMessageReceived)){
+            setNotification(prevNotifications => [newMessageReceived, ...prevNotifications]);
+            setFetchChatAgain(!fetchAgain)
+          }
         } else {
           setMessages(prevMessages => [...prevMessages, newMessageReceived]);
         }
