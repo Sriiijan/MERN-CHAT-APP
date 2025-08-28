@@ -10,6 +10,8 @@ dotenv.config({
 
 const port = process.env.PORT || 5000;
 
+
+
 connectDB()
     .then(() => {
         app.on("error", (error) => {

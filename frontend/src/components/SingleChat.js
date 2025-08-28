@@ -29,35 +29,35 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
     const [typing, setTyping]= useState(false);
     const [isTyping, setIsTyping]= useState(false);
 
-    // FIXED: Corrected typo in autoPlay
+
     const defaultOptions= {
       loop: true,
-      autoPlay: true, // Fixed: was "autuPlay"
-      animationData: animationData, // More explicit
-      rendererSettings: { // Fixed: was "renderSettings"
+      autoPlay: true, 
+      animationData: animationData,
+      rendererSettings: {
         preserveAspectRatio: "xMidYMid slice"
       }
     };
 
     // Track messages state changes
     useEffect(() => {
-      console.log("🔥 MESSAGES STATE CHANGED IN COMPONENT:", messages.length);
+      // console.log("🔥 MESSAGES STATE CHANGED IN COMPONENT:", messages.length);
       setRenderTrigger(prev => prev + 1);
     }, [messages]);
 
 
     const fetchMessages = async () => {
-      console.log("🚀 fetchMessages STARTED - current messages:", messages.length);
+      // console.log("🚀 fetchMessages STARTED - current messages:", messages.length);
       
       if (!selectedChat) return;
       
       if (loading) {
-        console.log("🚫 Already loading, skipping fetch");
+        // console.log("🚫 Already loading, skipping fetch");
         return;
       }
 
       setLoading(true);
-      console.log("🚀 setLoading(true) - messages before:", messages.length);
+      // console.log("🚀 setLoading(true) - messages before:", messages.length);
       
       try {
         const { data } = await axios.get(`/api/message/${selectedChat._id}`, {
@@ -66,16 +66,16 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
           }
         });
         
-        console.log("API response:", data);
-        console.log("Messages from API:", data.data);
-        console.log("Setting messages to:", data.data);
+        // console.log("API response:", data);
+        // console.log("Messages from API:", data.data);
+        // console.log("Setting messages to:", data.data);
         
         if (data.data && Array.isArray(data.data)) {
           setMessages([...data.data]);
-          console.log("✅ IMMEDIATELY after setMessages:", data.data.length);
-          console.log("Messages set successfully, length:", data.data.length);
+          // console.log("✅ IMMEDIATELY after setMessages:", data.data.length);
+          // console.log("Messages set successfully, length:", data.data.length);
         } else {
-          console.error("Invalid messages data:", data.data);
+          // console.error("Invalid messages data:", data.data);
           setMessages([]);
         }
 
@@ -103,17 +103,17 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
       socket.emit("setup", user);
       
       socket.on("connected", () => {
-        console.log("Socket connected");
+        // console.log("Socket connected");
         setSocketConnected(true);
       });
       
       socket.on("typing", () => {
-        console.log("Received typing event");
+        // console.log("Received typing event");
         setIsTyping(true);
       });
       
       socket.on("stop typing", () => {
-        console.log("Received stop typing event");
+        // console.log("Received stop typing event");
         setIsTyping(false);
       });
 
@@ -126,9 +126,9 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
 
     // Handle selected chat changes
     useEffect(() => {
-      console.log("🔥 useEffect triggered, selectedChat ID:", selectedChat?._id);
-      console.log("🔥 Current messages length before fetch:", messages.length);
-      console.log("🔥 Currently loading:", loading);
+      // console.log("🔥 useEffect triggered, selectedChat ID:", selectedChat?._id);
+      // console.log("🔥 Current messages length before fetch:", messages.length);
+      // console.log("🔥 Currently loading:", loading);
       
       // Stop typing when switching chats
       if (typingTimeoutRef.current) {
@@ -219,7 +219,7 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
       if (!typing) {
         setTyping(true);
         socket.emit("typing", selectedChat._id);
-        console.log("Started typing, emitted typing event");
+        // console.log("Started typing, emitted typing event");
       }
 
       // Clear existing timeout
@@ -229,7 +229,7 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
 
       // Set new timeout - back to 3 seconds for better UX
       typingTimeoutRef.current = setTimeout(() => {
-        console.log("Typing timeout fired, stopping typing");
+        // console.log("Typing timeout fired, stopping typing");
         socket.emit("stop typing", selectedChat._id);
         setTyping(false);
       }, 3000);
@@ -247,12 +247,12 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
       };
     }, []);
 
-    console.log("About to render ScrollableChat with messages:", messages);
-    console.log("Messages length before render:", messages.length);
+    // console.log("About to render ScrollableChat with messages:", messages);
+    // console.log("Messages length before render:", messages.length);
 
     return (
       <>
-        {console.log("🔴 SingleChat RENDER - Messages length:", messages.length, "Time:", Date.now())}
+        {/* {console.log("🔴 SingleChat RENDER - Messages length:", messages.length, "Time:", Date.now())} */}
         {selectedChat ? (
           <>
             <Text
@@ -308,7 +308,7 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
               ) : (
                 <div>
                   <div className='messages' key={messages.length}>
-                    {console.log("🎯 Rendering messages container with length:", messages.length)}
+                    {/* {console.log("🎯 Rendering messages container with length:", messages.length)} */}
                     <ScrollableChat
                       key={`messages-${selectedChat?._id}-${messages.length}`}
                       messages={messages}
@@ -317,7 +317,7 @@ const SingleChat = ({fetchAgain, setFetchChatAgain}) => {
                 </div>
               )}
               <FormControl onKeyDown={sendMessage} isRequired mt={3}>
-                {/* IMPROVED: Better styled typing indicator with consistent height */}
+                
                 <Box minHeight="10px" display="flex" alignItems="center" mb={1}>
                   {isTyping && (
                     <>

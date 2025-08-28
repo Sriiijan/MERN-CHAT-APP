@@ -27,7 +27,7 @@ const isSameSenderMargin = (messages, m, i, userId) => {
 };
 
 const ScrollableChat = ({ messages }) => {
-  console.log("📨 ScrollableChat RENDER - messages:", messages?.length);
+  // console.log("📨 ScrollableChat RENDER - messages:", messages?.length);
   
   const { user } = ChatState();
   const scrollRef = useRef(null);
@@ -36,7 +36,7 @@ const ScrollableChat = ({ messages }) => {
   const [renderKey, setRenderKey] = useState(0);
   
   useEffect(() => {
-    console.log("📜 ScrollableChat useEffect - messages changed:", messages?.length);
+    // console.log("📜 ScrollableChat useEffect - messages changed:", messages?.length);
     setRenderKey(prev => prev + 1); // Force re-render
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -75,10 +75,10 @@ const ScrollableChat = ({ messages }) => {
         }
       }}
     >
-      {console.log("🎨 About to render messages:", messages?.length)}
+      {/* {console.log("🎨 About to render messages:", messages?.length)} */}
       {messages && messages.length > 0 ? (
         messages.map((m, i) => {
-          console.log(`🔹 Rendering message ${i}:`, m);
+          // console.log(`🔹 Rendering message ${i}:`, m);
           return (
             <div style={{ display: "flex" }} key={m._id}>
               {(isSameSender(messages, m, i, user._id) ||
@@ -128,10 +128,10 @@ const ScrollableChat = ({ messages }) => {
 
 export default React.memo(ScrollableChat, (prevProps, nextProps) => {
   const isSame = prevProps.messages?.length === nextProps.messages?.length;
-  console.log("🔄 React.memo comparison:", {
-    prevLength: prevProps.messages?.length || 0,
-    nextLength: nextProps.messages?.length || 0,
-    shouldSkipRender: isSame
-  });
+  // console.log("🔄 React.memo comparison:", {
+  //   prevLength: prevProps.messages?.length || 0,
+  //   nextLength: nextProps.messages?.length || 0,
+  //   shouldSkipRender: isSame
+  // });
   return isSame;
 });

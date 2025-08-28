@@ -6,47 +6,74 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { generateToken } from "../utils/generateToken.js";
 
 // Register New User
-const registerUser= asyncHandler(async (req, res)=> {
-    const {name, email, password}= req.body
-
-    if(!name || !email || !password){
-        throw new ApiError(400, "Enter all the fields")
-    }
-
-    const userExists= await User.findOne({email})
-
-    if(userExists){
-        throw new ApiError(409, "User already exists")
-    }
-
-    const avatarLoaclPath= req.file?.path
-    let avatar
+const registerUser = asyncHandler(async (req, res) => {
+    console.log("=== REGISTRATION DEBUG START ===");
     
-    if(avatarLoaclPath){
-        avatar= await uploadOnCloudinary(avatarLoaclPath)
+    const { name, email, password } = req.body;
+    // console.log("Body data:", { name, email, password: password ? "***" : "missing" });
+
+    if (!name || !email || !password) {
+        throw new ApiError(400, "Enter all the fields");
     }
 
-    const user= await User.create(
-        {
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+        throw new ApiError(409, "User already exists");
+    }
+    
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    console.log("Avatar Local Path:", avatarLocalPath);
+    
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar file is required");
+    }
+
+    console.log("Starting Cloudinary upload...");
+    
+    try {
+        const avatar = await uploadOnCloudinary(avatarLocalPath);
+        console.log("Cloudinary upload result:", avatar);
+        
+        if (!avatar) {
+            console.error("Cloudinary returned null/undefined");
+            throw new ApiError(400, "Cloudinary upload failed - no response");
+        }
+
+        if (!avatar.secure_url && !avatar.url) {
+            console.error("Cloudinary response missing URL:", avatar);
+            throw new ApiError(400, "Cloudinary upload failed - no URL returned");
+        }
+
+        console.log("Cloudinary upload successful:", avatar.secure_url || avatar.url);
+
+        const user = await User.create({
             name,
             email,
             password,
-            avatar
+            avatar: avatar.secure_url || avatar.url
+        });
+
+        const createdUser = await User.findById(user._id).select("-password");
+
+        if (!createdUser) {
+            throw new ApiError(500, "Something went wrong while user registration");
         }
-    )
 
-    const createdUser= await User.findById(user._id).select(
-        "-password"
-    )
+        console.log("=== REGISTRATION SUCCESS ===");
 
-    if(!createdUser){
-        throw new ApiError(500, "Something went wrong while user registration")
+        return res.status(201).json(
+            new ApiResponse(201, createdUser, "User registered successfully")
+        );
+
+    } catch (cloudinaryError) {
+        console.error("=== CLOUDINARY ERROR ===");
+        console.error("Error details:", cloudinaryError);
+        console.error("Error message:", cloudinaryError.message);
+        console.error("Error stack:", cloudinaryError.stack);
+        
+        throw new ApiError(400, `Cloudinary upload failed: ${cloudinaryError.message}`);
     }
-
-    return res.status(200).json(
-        new ApiResponse(200, createdUser, "User registerd successfully")
-    )
-})
+});
 
 // Login User
 const loginUser= asyncHandler(async(req, res)=>{

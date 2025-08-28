@@ -6,8 +6,8 @@ import { ChatState } from '../../context/chatProvider.js';
 
 const Login = () => {
     const [show, setShow] = useState(true); // For show & hide the password
-    const [email, setEmail]= useState();
-    const [password, setPassword]= useState();
+    const [email, setEmail]= useState("");
+    const [password, setPassword]= useState("");
     const toast= useToast();
 
     const history= useHistory();
@@ -104,7 +104,7 @@ const Login = () => {
             Login
         </Button>
 
-        <Button variant='solid'
+        {/* <Button variant='solid'
             colorScheme='red'
             width='100%'
             style={{marginTop: 15}}
@@ -114,7 +114,7 @@ const Login = () => {
             }}
         >
             Get Guest User Credentials
-        </Button>
+        </Button> */}
     </VStack>
 }
 

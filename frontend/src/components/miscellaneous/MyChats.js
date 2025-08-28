@@ -22,7 +22,7 @@ const MyChats = ({fetchAgain}) => {
           Authorization:`Bearer ${user.token}`
         }
       })
-      console.log("Fetched chats:", data); 
+      // console.log("Fetched chats:", data); 
       setChats(Array.isArray(data.data) ? data.data : [data.data]);
 
     } catch (error) {

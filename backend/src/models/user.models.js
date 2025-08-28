@@ -18,7 +18,7 @@ const userSchema= new Schema({
     },
     avatar: {
         type: String,
-        default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+        default: "https://www.booksie.com/files/profiles/22/mr-anonymous_230x230.png"
     },
     isAdmin: {
         type: Boolean,
