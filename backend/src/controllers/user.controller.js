@@ -104,6 +104,46 @@ const loginUser= asyncHandler(async(req, res)=>{
     )
 })
 
+//Update Avatar
+const updateUserAvatar= asyncHandler(async (req, res) => {
+    const avatarLocalPath= req.file?.path;
+    console.log("AVATAR LOCAL PATH: ", avatarLocalPath);
+    
+
+    if(!avatarLocalPath) {
+        throw new ApiError(400, "Avatar is missing");
+    }
+
+    const avatar= await uploadOnCloudinary(avatarLocalPath);
+
+     console.log("AVATAR: ", avatar);
+
+    if(!avatar) {
+        throw new ApiError(400, "Error while uploading avatar")
+    }
+
+    console.log("USER: ", req.user?._id);
+    
+
+    const user= await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                avatar: avatar.url
+            }
+        },
+        {new: true}
+    )
+
+    if(!user) {
+        throw new ApiError(404, "User not found")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, user, "Avatar updated successfully")
+    )
+});
+
 // Serach User
 const allUsers= asyncHandler(async(req, res)=>{
     const keyWord= req.query.search?
@@ -123,4 +163,4 @@ const allUsers= asyncHandler(async(req, res)=>{
     );
 })
 
-export {registerUser, loginUser, allUsers};
+export {registerUser, loginUser, allUsers, updateUserAvatar};

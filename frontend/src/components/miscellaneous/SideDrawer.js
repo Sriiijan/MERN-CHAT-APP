@@ -28,6 +28,7 @@ import ChatLoading from '../ChatLoading.js';
 import UserListItem from '../authentication/UserAvatar/UserListItem.js';
 import axios from 'axios';
 import { getSender } from '../../config/ChatLogics.js';
+import UpdateAvatar from './UpdateAvatar.js';
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -189,6 +190,10 @@ const SideDrawer = () => {
               <ProfileModal user={user}>
                 <MenuItem>My Profile</MenuItem>
               </ProfileModal>
+              {/* Update Avatar */}
+              <UpdateAvatar user={user}>
+                <MenuItem>Change Avatar</MenuItem>
+              </UpdateAvatar>
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
