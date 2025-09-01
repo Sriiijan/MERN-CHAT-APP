@@ -5,13 +5,21 @@ import {upload} from "../middlewares/multer.middleware.js"
 
 const router = Router();
 
-router.route("/").post(upload.fields([
+// Register user - POST /api/user/register
+router.route("/register").post(upload.fields([
     {
         name: "avatar",
         maxCount: 1
     }
 ]), registerUser);
+
+// Login user - POST /api/user/login
 router.route("/login").post(loginUser);
-router.route("/").get(protect, allUsers);
-router.route("/avatar").patch(protect, upload.single("avatar"), updateUserAvatar)
+
+// Get all users - GET /api/user/search (or /api/user/all)
+router.route("/search").get(protect, allUsers);
+
+// Update avatar - PATCH /api/user/avatar
+router.route("/avatar").patch(protect, upload.single("avatar"), updateUserAvatar);
+
 export default router;

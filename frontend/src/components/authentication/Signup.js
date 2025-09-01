@@ -106,7 +106,7 @@ const Signup = () => {
       formData.append('avatar', selectedFile);
       
       const { data } = await axios.post(
-        "/api/user/",
+        "/api/user/register",
         formData,
         {
           headers: {

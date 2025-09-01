@@ -62,7 +62,7 @@ const SideDrawer = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/user?search=${search}`, {
+      const response = await fetch(`/api/user/search?search=${search}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${user.token}`,
