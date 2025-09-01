@@ -1,25 +1,45 @@
 import { Router } from "express";
-import { allUsers, loginUser, registerUser, updateUserAvatar } from "../controllers/user.controller.js";
+import { 
+    registerUser, 
+    loginUser, 
+    searchUsers, 
+    getAllUsers, 
+    updateUserAvatar 
+} from "../controllers/user.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
-import {upload} from "../middlewares/multer.middleware.js"
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
-// Register user - POST /api/user/register
-router.route("/register").post(upload.fields([
-    {
-        name: "avatar",
-        maxCount: 1
-    }
-]), registerUser);
+// ===== PUBLIC ROUTES (No Authentication Required) =====
 
-// Login user - POST /api/user/login
+// Register user - POST /api/users/register
+router.route("/register").post(
+    upload.fields([
+        {
+            name: "avatar",
+            maxCount: 1
+        }
+    ]), 
+    registerUser
+);
+
+// Login user - POST /api/users/login
 router.route("/login").post(loginUser);
 
-// Get all users - GET /api/user/search (or /api/user/all)
-router.route("/search").get(protect, allUsers);
+// ===== PROTECTED ROUTES (Authentication Required) =====
 
-// Update avatar - PATCH /api/user/avatar
-router.route("/avatar").patch(protect, upload.single("avatar"), updateUserAvatar);
+// Get all users for sidebar - GET /api/users/
+router.route("/").get(protect, getAllUsers);
+
+// Search users - GET /api/users/search?search=query
+router.route("/search").get(protect, searchUsers);
+
+// Update user avatar - PATCH /api/users/avatar
+router.route("/avatar").patch(
+    protect, 
+    upload.single("avatar"), 
+    updateUserAvatar
+);
 
 export default router;
