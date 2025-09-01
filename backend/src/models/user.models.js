@@ -18,7 +18,7 @@ const userSchema= new Schema({
     },
     avatar: {
         type: String,
-        default: "https://www.booksie.com/files/profiles/22/mr-anonymous_230x230.png"
+        // default: "https://www.booksie.com/files/profiles/22/mr-anonymous_230x230.png"
     },
     isAdmin: {
         type: Boolean,

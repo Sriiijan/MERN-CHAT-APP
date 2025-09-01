@@ -5,12 +5,10 @@ import { Server } from "socket.io";
 import http from "http";
 
 dotenv.config({
-    path: './env'
+    path: './.env'
 });
 
 const port = process.env.PORT || 5000;
-
-
 
 connectDB()
     .then(() => {
@@ -26,7 +24,7 @@ connectDB()
         const io = new Server(server, {
             pingTimeout: 60000,
             cors: {
-                origin: "*",
+                origin: process.env.CORS_ORIGIN || "*",
                 methods: ["GET", "POST"]
             }
         });
@@ -39,7 +37,6 @@ connectDB()
                 console.log("❌ Client disconnected:", socket.id);
             });
             
-            // Add other socket event handlers here
             socket.on("setup", (userData) => {
                 socket.join(userData._id);
                 socket.emit("connected");
@@ -54,12 +51,12 @@ connectDB()
             socket.on("stop typing", (room) => socket.in(room).emit("stop typing"))
 
             socket.on("new message", (newMessageReceived) => {
-                var chat= newMessageReceived.chat;
+                var chat = newMessageReceived.chat;
 
-                if(!chat.users) return console.log("Chat.users not defined")
+                if (!chat.users) return console.log("Chat.users not defined")
 
                 chat.users.forEach((user) => {
-                    if(user._id == newMessageReceived.sender._id) return;
+                    if (user._id == newMessageReceived.sender._id) return;
                     socket.in(user._id).emit("message recieved", newMessageReceived);
                 });
             });

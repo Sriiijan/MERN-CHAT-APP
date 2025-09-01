@@ -37,7 +37,8 @@ const SideDrawer = () => {
   const [loadingChat, setLoadingChat] = useState(false);
 
   const { user, setSelectedChat, chats, setChats, notification, setNotification} = ChatState();
-
+  // console.log("USER: ", user);
+  
   const history = useHistory();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -183,7 +184,7 @@ const SideDrawer = () => {
                 size="sm"
                 cursor="pointer"
                 name={user?.name}
-                src={user?.pic}
+                src={user?.avatar}
               />
             </MenuButton>
             <MenuList>

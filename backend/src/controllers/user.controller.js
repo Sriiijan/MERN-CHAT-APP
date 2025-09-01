@@ -107,7 +107,7 @@ const loginUser= asyncHandler(async(req, res)=>{
 //Update Avatar
 const updateUserAvatar= asyncHandler(async (req, res) => {
     const avatarLocalPath= req.file?.path;
-    console.log("AVATAR LOCAL PATH: ", avatarLocalPath);
+    // console.log("AVATAR LOCAL PATH: ", avatarLocalPath);
     
 
     if(!avatarLocalPath) {
